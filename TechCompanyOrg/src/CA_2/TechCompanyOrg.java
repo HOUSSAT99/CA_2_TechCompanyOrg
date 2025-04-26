@@ -50,9 +50,45 @@ public class TechCompanyOrg {
                         System.out.println((i + 1) + ". " + names[i]);
                     }
                     break;
-                case SEARCH:
-                    System.out.println("Searching logic will go here.");
+                case SEARCH: // Create a dummy employee list
+                    Employee[] employees = {
+                        new Employee("Alice", 1001, DepartmentName.SOFTWARE_DEVELOPMENT, ManagerType.TEAM_LEAD),
+                        new Employee("Bob", 1002, DepartmentName.HUMAN_RESOURCES, ManagerType.HEAD_MANAGER),
+                        new Employee("Charlie", 1003, DepartmentName.TECH_SUPPORT, ManagerType.PROJECT_MANAGER),
+                        new Employee("Emily", 1004, DepartmentName.SOFTWARE_DEVELOPMENT, ManagerType.TEAM_LEAD),
+                        new Employee("Zakaria", 1005, DepartmentName.TECH_SUPPORT, ManagerType.HEAD_MANAGER)  
+                    };
+                    // First, sort the list by name
+                    String[] employeeNames = new String[employees.length];
+                    for (int i = 0; i < employees.length; i++) {
+                            employeeNames[i] = employees[i].getName();
+                    }
+                    mergeSort(employeeNames, 0, employeeNames.length - 1);
+                    // Rebuild sorted employee array
+                    Employee[] sortedEmployees = new Employee[employees.length];
+                    for (int i = 0; i < employeeNames.length; i++) {
+                        for (Employee emp : employees) {
+                            if (emp.getName().equalsIgnoreCase(employeeNames[i])) {
+                                sortedEmployees[i] = emp;
+                                break;
+                            }
+                        }
+                    }
+                    // User input
+                    System.out.print("Enter name to search: ");
+                    String searchName = scanner.nextLine();
+                    
+                    Employee result = binarySearch(sortedEmployees, searchName);
+                    if (result != null) {
+                        System.out.println("Employee found:");
+                        System.out.println("Name: " + result.getName());
+                        System.out.println("Manager Type: " + result.getManagerType());
+                        System.out.println("Department: " + result.getDepartment());
+                    }else{
+                      System.out.println("Employee not found.");  
+                    }
                     break;
+               
                 case ADD:
                     System.out.println("Add employee logic will go here.");
                     break;
@@ -103,6 +139,20 @@ private static void merge(String[] array, int left, int middle, int right) {
 
     while (i < n1) array[k++] = L[i++];
     while (j < n2) array[k++] = R[j++];
+}
+public static Employee binarySearch(Employee[] employees, String target) {
+    int left = 0;
+    int right = employees.length - 1;
+
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        int cmp = employees[mid].compareByName(target);
+
+        if (cmp == 0) return employees[mid];
+        else if (cmp < 0) left = mid + 1;
+        else right = mid - 1;
+    }
+    return null;
 }
 
     
