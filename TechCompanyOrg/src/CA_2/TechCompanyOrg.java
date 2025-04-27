@@ -155,7 +155,30 @@ public class TechCompanyOrg {
                     break;
                     
                 case GENERATE:
-                    System.out.println("Random employee generation logic will go here.");
+                    System.out.println("Generating Random Employees...");
+                    String[] sampleNames = {
+                        "Zakaria", "Alice", "John", "Emily", "Bob", "Charlie", "Dave", "Eva",
+                        "Frank", "Grace", "Helen", "Isaac", "Jill", "Kyle", "Laura"
+                    };
+                    System.out.print("How many employees do you want to generate? ");
+                    int numberOfEmployees = 0;
+                    if (scanner.hasNextInt()) {
+                        numberOfEmployees = scanner.nextInt();
+                         scanner.nextLine(); // consume newline
+                    }else{
+                        System.out.println("Invalid number. Returning to menu.");
+                        scanner.nextLine(); // consume invalid input
+                        break;
+                    }
+                    for (int i = 0; i < numberOfEmployees; i++) {
+                        String randomName = sampleNames[(int) (Math.random() * sampleNames.length)];
+                        ManagerType randomManager = ManagerType.values()[(int) (Math.random() * ManagerType.values().length)];
+                        DepartmentName randomDepartment = DepartmentName.values()[(int) (Math.random() * DepartmentName.values().length)];
+                        int randomID = (int) (Math.random() * 10000);
+                        Employee randomEmployee = new Employee(randomName, randomID, randomDepartment, randomManager);
+                        
+                        System.out.println(randomEmployee);
+                    }
                     break;
                 case EXIT:
                     System.out.println("Exiting program. Goodbye!");
