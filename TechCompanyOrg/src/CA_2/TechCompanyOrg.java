@@ -90,8 +90,70 @@ public class TechCompanyOrg {
                     break;
                
                 case ADD:
-                    System.out.println("Add employee logic will go here.");
+                    System.out.print("Enter Employee Name: ");
+                    String newName = scanner.nextLine();
+                    
+                    // Manager Type selection
+                    System.out.println("Select Manager Type:");
+                    int index = 1;
+                    for (ManagerType type : ManagerType.values()) {
+                        System.out.println(index + ". " + type);
+                        index++;
+                        }
+                    int managerChoice = 0;
+                    boolean validManagerChoice = false;
+                    while (!validManagerChoice) {
+                        System.out.print("Enter choice (1-" + ManagerType.values().length + "): ");
+                         if (scanner.hasNextInt()) {
+                             managerChoice = scanner.nextInt();
+                        
+                             if (managerChoice >= 1 && managerChoice <= ManagerType.values().length) {
+                            validManagerChoice = true;
+                        } else {
+                            System.out.println("Invalid Manager choice. Try again.");
+                        }
+                    } else {
+                            System.out.println("Invalid input. Please enter a number.");
+                            scanner.next();
+                         }
+                    }
+
+                    scanner.nextLine(); // Consume newline
+                    ManagerType selectedManagerType = ManagerType.values()[managerChoice - 1];
+                    
+                    // Department selection
+                    System.out.println("\nSelect Department:");
+                    index = 1;
+                    for (DepartmentName dept : DepartmentName.values()) {
+                        System.out.println(index + ". " + dept);
+                        index++;
+                        }
+                    int deptChoice = 0;
+                    boolean validDeptChoice = false;
+                    while (!validManagerChoice) {
+                        System.out.print("Enter choice (1-" + DepartmentName.values().length + "): ");
+                        if (scanner.hasNextInt()) {
+                            deptChoice = scanner.nextInt();
+                            if (deptChoice >= 1 && deptChoice <= DepartmentName.values().length) {
+                                validManagerChoice = true;
+                            }else{
+                                System.out.println("Invalid Department choice. Try again.");
+                            }
+                        } else {
+                            System.out.println("Invalid input. Please enter a number.");
+                            scanner.next();
+                        }
+                    }
+                        scanner.nextLine();
+                        DepartmentName selectedDepartment = DepartmentName.values()[deptChoice - 1];
+                        
+                        // Create and display the new Employee
+                        Employee newEmployee = new Employee(newName, (int) (Math.random() * 10000), selectedDepartment, selectedManagerType);
+                        System.out.println("\nNew Employee Created Successfully:");
+                        System.out.println(newEmployee);
+                        
                     break;
+                    
                 case GENERATE:
                     System.out.println("Random employee generation logic will go here.");
                     break;
