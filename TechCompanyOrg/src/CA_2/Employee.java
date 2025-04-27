@@ -25,6 +25,9 @@ public class Employee {
     public int getEmployeeID() { return employeeID; }
     public DepartmentName getDepartment() { return department; }
     public ManagerType getManagerType() { return managerType; }
+    public int compareByName(String otherName) {
+    return this.name.compareToIgnoreCase(otherName);
+    }
 
     @Override
     public String toString() {
