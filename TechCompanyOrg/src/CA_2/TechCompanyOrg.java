@@ -238,6 +238,7 @@ public static Employee binarySearch(Employee[] employees, String target) {
         else right = mid - 1;
     }
     return null;
+
 }
 
     
