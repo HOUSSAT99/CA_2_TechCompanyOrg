@@ -1,21 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package CA_2;
-import java.util.Scanner;
 
-/**
- *
- * @author Lenovo
- */
+import java.io.*;
+import java.util.*;
+
 public class TechCompanyOrg {
 
-    /**
-     * @param args the command line arguments
-     */
+    private static final String FILE_NAME = "Application_form.txt";
+
     public static void main(String[] args) {
-        // TODO code application logic here
         Scanner scanner = new Scanner(System.in);
         MenuOption choice = null;
 
@@ -28,7 +20,7 @@ public class TechCompanyOrg {
 
             System.out.print("Enter your choice: ");
             int input = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             if (input < 1 || input > MenuOption.values().length) {
                 System.out.println("Invalid option. Please try again.");
@@ -39,147 +31,62 @@ public class TechCompanyOrg {
 
             switch (choice) {
                 case SORT:
-                    String[] names = {
-                        "Zakaria", "Alice", "John", "Emily", "Bob", "Charlie", "Dave", "Eva", "Frank", "Grace",
-                        "Helen", "Isaac", "Jill", "Kyle", "Laura", "Mike", "Nina", "Oscar", "Paul", "Quincy",
-                        "Rachel", "Steve", "Tina", "Uma", "Victor", "Wendy", "Xavier", "Yasmine", "Zane"
-                    };
-                    mergeSort(names, 0, names.length - 1);
-                    System.out.println("\nTop 20 Sorted Names:");
-                    for (int i = 0; i < 20 && i < names.length; i++) {
-                        System.out.println((i + 1) + ". " + names[i]);
+                    List<Employee> sortedEmployees = readEmployeesFromFile();
+                    sortedEmployees.sort(Comparator.comparing(Employee::getName, String.CASE_INSENSITIVE_ORDER));
+                    System.out.println("\nTop 20 Sorted Employees:");
+                    for (int i = 0; i < 20 && i < sortedEmployees.size(); i++) {
+                        Employee emp = sortedEmployees.get(i);
+                        System.out.println((i + 1) + ". " + emp);
                     }
                     break;
-                case SEARCH: // Create a dummy employee list
-                    Employee[] employees = {
-                        new Employee("Alice", 1001, DepartmentName.SOFTWARE_DEVELOPMENT, ManagerType.TEAM_LEAD),
-                        new Employee("Bob", 1002, DepartmentName.HUMAN_RESOURCES, ManagerType.HEAD_MANAGER),
-                        new Employee("Charlie", 1003, DepartmentName.TECH_SUPPORT, ManagerType.PROJECT_MANAGER),
-                        new Employee("Emily", 1004, DepartmentName.SOFTWARE_DEVELOPMENT, ManagerType.TEAM_LEAD),
-                        new Employee("Zakaria", 1005, DepartmentName.TECH_SUPPORT, ManagerType.HEAD_MANAGER)  
-                    };
-                    // First, sort the list by name
-                    String[] employeeNames = new String[employees.length];
-                    for (int i = 0; i < employees.length; i++) {
-                            employeeNames[i] = employees[i].getName();
-                    }
-                    mergeSort(employeeNames, 0, employeeNames.length - 1);
-                    // Rebuild sorted employee array
-                    Employee[] sortedEmployees = new Employee[employees.length];
-                    for (int i = 0; i < employeeNames.length; i++) {
-                        for (Employee emp : employees) {
-                            if (emp.getName().equalsIgnoreCase(employeeNames[i])) {
-                                sortedEmployees[i] = emp;
-                                break;
-                            }
-                        }
-                    }
-                    // User input
+
+                case SEARCH:
+                    List<Employee> employeeList = readEmployeesFromFile();
                     System.out.print("Enter name to search: ");
                     String searchName = scanner.nextLine();
-                    
-                    Employee result = binarySearch(sortedEmployees, searchName);
-                    if (result != null) {
-                        System.out.println("Employee found:");
-                        System.out.println("Name: " + result.getName());
-                        System.out.println("Manager Type: " + result.getManagerType());
-                        System.out.println("Department: " + result.getDepartment());
-                    }else{
-                      System.out.println("Employee not found.");  
+                    boolean found = false;
+                    for (Employee emp : employeeList) {
+                        if (emp.getName().equalsIgnoreCase(searchName)) {
+                            System.out.println("Employee found: " + emp);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        System.out.println("Employee not found.");
                     }
                     break;
-               
+
                 case ADD:
                     System.out.print("Enter Employee Name: ");
                     String newName = scanner.nextLine();
-                    
-                    // Manager Type selection
-                    System.out.println("Select Manager Type:");
-                    int index = 1;
-                    for (ManagerType type : ManagerType.values()) {
-                        System.out.println(index + ". " + type);
-                        index++;
-                        }
-                    int managerChoice = 0;
-                    boolean validManagerChoice = false;
-                    while (!validManagerChoice) {
-                        System.out.print("Enter choice (1-" + ManagerType.values().length + "): ");
-                         if (scanner.hasNextInt()) {
-                             managerChoice = scanner.nextInt();
-                        
-                             if (managerChoice >= 1 && managerChoice <= ManagerType.values().length) {
-                            validManagerChoice = true;
-                        } else {
-                            System.out.println("Invalid Manager choice. Try again.");
-                        }
-                    } else {
-                            System.out.println("Invalid input. Please enter a number.");
-                            scanner.next();
-                         }
-                    }
 
-                    scanner.nextLine(); // Consume newline
-                    ManagerType selectedManagerType = ManagerType.values()[managerChoice - 1];
-                    
-                    // Department selection
-                    System.out.println("\nSelect Department:");
-                    index = 1;
-                    for (DepartmentName dept : DepartmentName.values()) {
-                        System.out.println(index + ". " + dept);
-                        index++;
-                        }
-                    int deptChoice = 0;
-                    boolean validDeptChoice = false;
-                    while (!validManagerChoice) {
-                        System.out.print("Enter choice (1-" + DepartmentName.values().length + "): ");
-                        if (scanner.hasNextInt()) {
-                            deptChoice = scanner.nextInt();
-                            if (deptChoice >= 1 && deptChoice <= DepartmentName.values().length) {
-                                validManagerChoice = true;
-                            }else{
-                                System.out.println("Invalid Department choice. Try again.");
-                            }
-                        } else {
-                            System.out.println("Invalid input. Please enter a number.");
-                            scanner.next();
-                        }
-                    }
-                        scanner.nextLine();
-                        DepartmentName selectedDepartment = DepartmentName.values()[deptChoice - 1];
-                        
-                        // Create and display the new Employee
-                        Employee newEmployee = new Employee(newName, (int) (Math.random() * 10000), selectedDepartment, selectedManagerType);
-                        System.out.println("\nNew Employee Created Successfully:");
-                        System.out.println(newEmployee);
-                        
+                    ManagerType selectedManagerType = selectManagerType(scanner);
+                    DepartmentName selectedDepartment = selectDepartment(scanner);
+
+                    Employee newEmployee = new Employee(newName, selectedManagerType, selectedDepartment);
+                    writeEmployeeToFile(newEmployee);
+
+                    System.out.println("\nNew Employee Created Successfully:");
+                    System.out.println(newEmployee);
                     break;
-                    
+
                 case GENERATE:
                     System.out.println("Generating Random Employees...");
-                    String[] sampleNames = {
-                        "Zakaria", "Alice", "John", "Emily", "Bob", "Charlie", "Dave", "Eva",
-                        "Frank", "Grace", "Helen", "Isaac", "Jill", "Kyle", "Laura"
-                    };
+                    String[] sampleNames = {"Zakaria", "Alice", "John", "Emily", "Bob", "Charlie", "Dave", "Eva",
+                            "Frank", "Grace", "Helen", "Isaac", "Jill", "Kyle", "Laura"};
                     System.out.print("How many employees do you want to generate? ");
-                    int numberOfEmployees = 0;
-                    if (scanner.hasNextInt()) {
-                        numberOfEmployees = scanner.nextInt();
-                         scanner.nextLine(); // consume newline
-                    }else{
-                        System.out.println("Invalid number. Returning to menu.");
-                        scanner.nextLine(); // consume invalid input
-                        break;
-                    }
+                    int numberOfEmployees = scanner.nextInt();
+                    scanner.nextLine();
                     for (int i = 0; i < numberOfEmployees; i++) {
                         String randomName = sampleNames[(int) (Math.random() * sampleNames.length)];
                         ManagerType randomManager = ManagerType.values()[(int) (Math.random() * ManagerType.values().length)];
                         DepartmentName randomDepartment = DepartmentName.values()[(int) (Math.random() * DepartmentName.values().length)];
-                        int randomID = (int) (Math.random() * 10000);
-                        Employee randomEmployee = new Employee(randomName, randomID, randomDepartment, randomManager);
-                        
+                        Employee randomEmployee = new Employee(randomName, randomManager, randomDepartment);
+                        writeEmployeeToFile(randomEmployee);
                         System.out.println(randomEmployee);
                     }
                     break;
+
                 case EXIT:
                     System.out.println("Exiting program. Goodbye!");
                     break;
@@ -189,58 +96,85 @@ public class TechCompanyOrg {
 
         scanner.close();
     }
-    // Recursive Merge Sort
-public static void mergeSort(String[] array, int left, int right) {
-    if (left < right) {
-        int middle = (left + right) / 2;
 
-        mergeSort(array, left, middle);
-        mergeSort(array, middle + 1, right);
-        merge(array, left, middle, right);
+    private static List<Employee> readEmployeesFromFile() {
+        System.out.println("Reading from file: " + new File(FILE_NAME).getAbsolutePath());
+    List<Employee> employees = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        String line;
+        boolean isFirstLine = true;
+        while ((line = br.readLine()) != null) {
+            if (isFirstLine) { // Skip header
+                isFirstLine = false;
+                continue;
+            }
+
+            String[] parts = line.split(",");
+            if (parts.length == 3) {
+                String name = parts[0].trim();
+                String managerStr = parts[1].trim();
+                String departmentStr = parts[2].trim();
+
+                // Defensive: check if valid enum values
+                try {
+                    ManagerType manager = ManagerType.valueOf(managerStr);
+                    DepartmentName department = DepartmentName.valueOf(departmentStr);
+                    employees.add(new Employee(name, manager, department));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid entry skipped: " + line);
+                }
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("Error reading file: " + e.getMessage());
     }
+    return employees;
 }
 
-private static void merge(String[] array, int left, int middle, int right) {
-    int n1 = middle - left + 1;
-    int n2 = right - middle;
 
-    String[] L = new String[n1];
-    String[] R = new String[n2];
 
-    for (int i = 0; i < n1; i++)
-        L[i] = array[left + i];
-    for (int j = 0; j < n2; j++)
-        R[j] = array[middle + 1 + j];
-
-    int i = 0, j = 0, k = left;
-
-    while (i < n1 && j < n2) {
-        if (L[i].compareToIgnoreCase(R[j]) <= 0) {
-            array[k++] = L[i++];
-        } else {
-            array[k++] = R[j++];
+    private static void writeEmployeeToFile(Employee emp) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            bw.newLine();
+            bw.write(emp.getName() + "," + emp.getManagerType() + "," + emp.getDepartment());
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
         }
     }
 
-    while (i < n1) array[k++] = L[i++];
-    while (j < n2) array[k++] = R[j++];
-}
-public static Employee binarySearch(Employee[] employees, String target) {
-    int left = 0;
-    int right = employees.length - 1;
-
-    while (left <= right) {
-        int mid = (left + right) / 2;
-        int cmp = employees[mid].compareByName(target);
-
-        if (cmp == 0) return employees[mid];
-        else if (cmp < 0) left = mid + 1;
-        else right = mid - 1;
+    private static ManagerType selectManagerType(Scanner scanner) {
+        System.out.println("Select Manager Type:");
+        for (int i = 0; i < ManagerType.values().length; i++) {
+            System.out.println((i + 1) + ". " + ManagerType.values()[i]);
+        }
+        int choice;
+        while (true) {
+            System.out.print("Enter choice: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= 1 && choice <= ManagerType.values().length) break;
+            } else scanner.next();
+            System.out.println("Invalid input. Try again.");
+        }
+        return ManagerType.values()[choice - 1];
     }
-    return null;
 
-}
-
-    
-    
+    private static DepartmentName selectDepartment(Scanner scanner) {
+        System.out.println("Select Department:");
+        for (int i = 0; i < DepartmentName.values().length; i++) {
+            System.out.println((i + 1) + ". " + DepartmentName.values()[i]);
+        }
+        int choice;
+        while (true) {
+            System.out.print("Enter choice: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= 1 && choice <= DepartmentName.values().length) break;
+            } else scanner.next();
+            System.out.println("Invalid input. Try again.");
+        }
+        return DepartmentName.values()[choice - 1];
+    }
 }
